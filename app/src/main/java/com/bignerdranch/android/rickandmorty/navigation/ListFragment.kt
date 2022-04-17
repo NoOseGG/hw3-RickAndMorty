@@ -5,15 +5,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bignerdranch.android.rickandmorty.R
 import com.bignerdranch.android.rickandmorty.adapter.PersonAdapter
 import com.bignerdranch.android.rickandmorty.addPaginationScrollListener
 import com.bignerdranch.android.rickandmorty.databinding.FragmentListBinding
 import com.bignerdranch.android.rickandmorty.model.ListPerson
+import com.bignerdranch.android.rickandmorty.model.PersonInfo
 import com.bignerdranch.android.rickandmorty.model.PersonItem
 import com.bignerdranch.android.rickandmorty.retrofit.RickAndMortyService
 import retrofit2.Call
@@ -24,12 +27,18 @@ class ListFragment : Fragment() {
 
     private var _binding: FragmentListBinding? = null
     private val binding get() = requireNotNull(_binding)
-    private val adapter by lazy { PersonAdapter {
-        findNavController().navigate(
-            R.id.action_listFragment_to_infoFragment,
-            bundleOf(InfoFragment.KEY_PERSON to it)
-        )
-    } }
+    private var personInfo: PersonInfo? = null
+    private val adapter by lazy {
+        PersonAdapter {
+            findNavController().navigate(
+                R.id.action_listFragment_to_infoFragment,
+                bundleOf(
+                    InfoFragment.KEY_PERSON to it.id,
+                    InfoFragment.KEY_PERSON_NAME to it.name
+                )
+            )
+        }
+    }
 
     private var isLoading = false
     private var count = 1
@@ -54,15 +63,30 @@ class ListFragment : Fragment() {
             if (!isLoading) {
                 isLoading = true
 
-                count++
                 loadRickAndMortyCharacters(count)
+                count++
                 Log.d("MyTag", "$count")
 
                 isLoading = false
             }
         }
 
-        loadRickAndMortyCharacters(1)
+        with(binding) {
+            swipeRefresh.setOnRefreshListener {
+                count = 1
+                val listPersonEmpty = listOf<PersonItem.Person>()
+                adapter.submitList(listPersonEmpty)
+                loadRickAndMortyCharacters(count)
+                count ++
+                showToast("Data updated")
+                swipeRefresh.isRefreshing = false
+            }
+        }
+
+        if(count == 1) {
+            loadRickAndMortyCharacters(1)
+            count++
+        }
     }
 
     override fun onDestroyView() {
@@ -71,25 +95,33 @@ class ListFragment : Fragment() {
     }
 
     private fun loadRickAndMortyCharacters(page: Int) {
-        RickAndMortyService.getInstance()
-            .getAllCharacters(page).enqueue(object : Callback<ListPerson> {
+        RickAndMortyService
+            .getInstance()
+            .getAllCharacters(page)
+            .enqueue(object : Callback<ListPerson> {
                 override fun onResponse(call: Call<ListPerson>, response: Response<ListPerson>) {
-                    if(response.isSuccessful) {
+                    if (response.isSuccessful) {
                         val listPerson = response.body()
                         val currentList = adapter.currentList.toList()
-                        val listResult = currentList.plus(listPerson?.results as List<PersonItem.Person>)
+                        val listResult =
+                            currentList.plus(listPerson?.results as List<PersonItem.Person>)
 
 
                         adapter.submitList(listResult)
+                    } else {
+                        showToast("Error during download")
                     }
-
                 }
 
                 override fun onFailure(call: Call<ListPerson>, t: Throwable) {
-                    TODO("Not yet implemented")
+                    showToast("Error during download")
                 }
-
             })
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT)
+            .show()
     }
 
 }

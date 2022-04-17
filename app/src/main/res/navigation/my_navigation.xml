@@ -17,6 +17,10 @@
     <fragment
         android:id="@+id/infoFragment"
         android:name="com.bignerdranch.android.rickandmorty.navigation.InfoFragment"
-        android:label="InfoFragment"
-        tools:layout="@layout/fragment_info"/>
+        android:label="{personName}"
+        tools:layout="@layout/fragment_info">
+        <argument
+            android:name="personName"
+            app:argType="string" />
+    </fragment>
 </navigation>

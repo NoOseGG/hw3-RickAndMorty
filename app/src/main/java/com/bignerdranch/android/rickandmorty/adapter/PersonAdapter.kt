@@ -8,37 +8,66 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.bignerdranch.android.rickandmorty.databinding.ItemCharacterBinding
+import com.bignerdranch.android.rickandmorty.databinding.ItemLoadingBinding
+import com.bignerdranch.android.rickandmorty.model.PersonInfo
 import com.bignerdranch.android.rickandmorty.model.PersonItem
 
 class PersonAdapter(
     private val onClick: (PersonItem.Person) -> Unit,
-) : ListAdapter<PersonItem.Person, PersonViewHolder>(DIFF_UTIL) {
+) : ListAdapter<PersonItem, RecyclerView.ViewHolder>(DIFF_UTIL) {
 
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
-        return PersonViewHolder(
-            binding = ItemCharacterBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ),
-            onClick = onClick
-        )
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            PersonItem.Loading -> TYPE_LOADING
+            is PersonItem.Person -> TYPE_PERSON
+        }
     }
 
-    override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            TYPE_PERSON -> {
+                PersonViewHolder(
+                    binding = ItemCharacterBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    ),
+                    onClick = onClick
+                )
+            }
+            TYPE_LOADING -> {
+                LoadingViewHolder(
+                    binding = ItemLoadingBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            }
+            else -> error("Inccorect viewType = $viewType")
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val personVH = holder as PersonViewHolder ?: return
+        val item = getItem(position) as PersonItem.Person ?: return
+        personVH.bind(item)
     }
 
     companion object {
-        val DIFF_UTIL = object : DiffUtil.ItemCallback<PersonItem.Person>() {
-            override fun areItemsTheSame(oldItem: PersonItem.Person, newItem: PersonItem.Person): Boolean {
+
+        private const val TYPE_PERSON = 0
+        private const val TYPE_LOADING = 1
+
+        val DIFF_UTIL = object : DiffUtil.ItemCallback<PersonItem>() {
+            override fun areItemsTheSame(oldItem: PersonItem, newItem: PersonItem): Boolean {
                 return oldItem == newItem
             }
 
-            override fun areContentsTheSame(oldItem: PersonItem.Person, newItem: PersonItem.Person): Boolean {
-                return oldItem.id == newItem.id
+            override fun areContentsTheSame(oldItem: PersonItem, newItem: PersonItem): Boolean {
+                return oldItem == newItem
             }
+
         }
     }
 }
@@ -56,3 +85,5 @@ class PersonViewHolder(
         }
     }
 }
+
+class LoadingViewHolder(binding: ItemLoadingBinding) : RecyclerView.ViewHolder(binding.root)

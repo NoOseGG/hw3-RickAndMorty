@@ -1,7 +1,6 @@
 package com.bignerdranch.android.rickandmorty.navigation
 
 import android.os.Bundle
-import android.os.PerformanceHintManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,11 @@ import androidx.navigation.ui.setupWithNavController
 import coil.load
 import com.bignerdranch.android.rickandmorty.R
 import com.bignerdranch.android.rickandmorty.databinding.FragmentInfoBinding
-import com.bignerdranch.android.rickandmorty.model.PersonItem.Person
+import com.bignerdranch.android.rickandmorty.model.PersonInfo
+import com.bignerdranch.android.rickandmorty.retrofit.RickAndMortyService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class InfoFragment : Fragment() {
 
@@ -22,7 +25,7 @@ class InfoFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         return FragmentInfoBinding.inflate(inflater, container, false)
             .also { _binding = it }
             .root
@@ -31,15 +34,9 @@ class InfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val person = arguments?.getSerializable(KEY_PERSON) as Person
-        with(binding) {
-            avatar.load(person.image)
-            name.text = person.name
-            status.text = getString(R.string.status, person.status)
-            species.text = getString(R.string.species, person.species)
-            type.text = getString(R.string.type, person.type)
-            gender.text = getString(R.string.gender, person.gender)
-            toolbar.title = person.name
+        val idPerson = arguments?.getInt(KEY_PERSON)
+        if (idPerson != null) {
+            loadSingleCharacter(idPerson)
         }
 
         binding.toolbar.setupWithNavController(findNavController())
@@ -50,7 +47,41 @@ class InfoFragment : Fragment() {
         _binding = null
     }
 
+    private fun loadSingleCharacter(id: Int) {
+
+        RickAndMortyService
+            .getInstance()
+            .getCharacter(id)
+            .enqueue(object : Callback<PersonInfo> {
+                override fun onResponse(
+                    call: Call<PersonInfo>,
+                    response: Response<PersonInfo>,
+                ) {
+                    if (response.isSuccessful) {
+                        val person = response.body()
+
+                        with(binding) {
+                            if (person != null) {
+                                avatar.load(person.image)
+                                name.text = person.name
+                                status.text = getString(R.string.status, person.status)
+                                species.text = getString(R.string.species, person.species)
+                                type.text = getString(R.string.type, person.type)
+                                gender.text = getString(R.string.gender, person.gender)
+                                location.text = getString(R.string.location, person.location.name)
+                            }
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<PersonInfo>, t: Throwable) {
+                    TODO("Not yet implemented")
+                }
+            })
+    }
+
     companion object {
-        const val KEY_PERSON = "person"
+        const val KEY_PERSON_NAME = "personName"
+        const val KEY_PERSON = "idPersonInfo"
     }
 }

@@ -3,10 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/MyProject/RickAndMorty/app/src/main/res/drawable/custom_toolbar.xml" value="0.2703125" />
+        <entry key="..\:/MyProject/RickAndMorty/app/src/main/res/drawable/style_button_back_on_action_bar.xml" value="0.2703125" />
         <entry key="..\:/MyProject/RickAndMorty/app/src/main/res/layout/activity_main.xml" value="0.24010416666666667" />
         <entry key="..\:/MyProject/RickAndMorty/app/src/main/res/layout/fragment_info.xml" value="0.24010416666666667" />
         <entry key="..\:/MyProject/RickAndMorty/app/src/main/res/layout/fragment_list.xml" value="0.24010416666666667" />
         <entry key="..\:/MyProject/RickAndMorty/app/src/main/res/layout/item_character.xml" value="0.24010416666666667" />
+        <entry key="..\:/MyProject/RickAndMorty/app/src/main/res/layout/item_loading.xml" value="0.264" />
       </map>
     </option>
   </component>
