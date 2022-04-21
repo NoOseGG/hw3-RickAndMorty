@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_navigation"
+    app:startDestination="@id/listFragment">
+
+    <fragment
+        android:id="@+id/listFragment"
+        android:name="com.bignerdranch.android.rickandmorty.navigation.ListFragment"
+        android:label="@string/title_actionbar_list_of_character"
+        tools:layout="@layout/fragment_list">
+        <action
+            android:id="@+id/action_listFragment_to_infoFragment"
+            app:destination="@id/infoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="com.bignerdranch.android.rickandmorty.navigation.InfoFragment"
+        android:label="{personName}"
+        tools:layout="@layout/fragment_info">
+        <argument
+            android:name="personName"
+            app:argType="string" />
+    </fragment>
+</navigation>

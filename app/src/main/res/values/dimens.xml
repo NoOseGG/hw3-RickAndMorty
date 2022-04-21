@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="info_fragment_avatar_height">200dp</dimen>
+    <dimen name="info_fragment_avatar_width">200dp</dimen>
+    <dimen name="info_fragment_name_text_size">26sp</dimen>
+    <dimen name="info_fragment_information_text_size">20sp</dimen>
+    <dimen name="info_fragment_margin_start">16dp</dimen>
+    <dimen name="info_fragment_margin_top_status_textview">16dp</dimen>
+    <dimen name="info_fragment_margin_top_name_and_avatar">8dp</dimen>
+    <dimen name="item_character_text_size">26sp</dimen>
+    <dimen name="item_character_margin_start">8dp</dimen>
+</resources>
