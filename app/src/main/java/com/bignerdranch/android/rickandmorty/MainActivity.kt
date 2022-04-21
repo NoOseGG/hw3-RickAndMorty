@@ -9,16 +9,18 @@ import com.bignerdranch.android.rickandmorty.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var navController: NavController
-    private lateinit var binding: ActivityMainBinding
+    private val navController: NavController by lazy {
+        (supportFragmentManager.findFragmentById(R.id.container) as NavHost)
+            .navController
+    }
+    private var _binding: ActivityMainBinding? = null
+    private val binding get() = requireNotNull(_binding)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navHost = supportFragmentManager.findFragmentById(R.id.container) as NavHost
-        navController = navHost.navController
         setSupportActionBar(binding.toolbar)
         binding.toolbar.setupWithNavController(navController)
     }

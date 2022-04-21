@@ -15,12 +15,13 @@ import com.bignerdranch.android.rickandmorty.retrofit.RickAndMortyService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.properties.Delegates
 
 class InfoFragment : Fragment() {
 
     private var _binding: FragmentInfoBinding? = null
     private val binding get() = requireNotNull(_binding)
-    private lateinit var load: Call<PersonInfo>
+    private var load by Delegates.notNull<Call<PersonInfo>>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
