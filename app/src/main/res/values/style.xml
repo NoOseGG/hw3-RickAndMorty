@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="roundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="titleTextColor">@color/white</item>
+        <item name="actionBarItemBackground">@color/white</item>
+        <item name="android:background">@color/black</item>
+    </style>
+
+</resources>

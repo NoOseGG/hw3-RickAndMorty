@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.bignerdranch.android.rickandmorty.databinding.ItemCharacterBinding
 import com.bignerdranch.android.rickandmorty.databinding.ItemLoadingBinding
-import com.bignerdranch.android.rickandmorty.model.PersonInfo
 import com.bignerdranch.android.rickandmorty.model.PersonItem
 
 class PersonAdapter(
@@ -44,14 +43,14 @@ class PersonAdapter(
                     )
                 )
             }
-            else -> error("Inccorect viewType = $viewType")
+            else -> error("Incorrect viewType = $viewType")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val personVH = holder as PersonViewHolder ?: return
-        val item = getItem(position) as PersonItem.Person ?: return
-        personVH.bind(item)
+        if(holder is PersonViewHolder) {
+            holder.bind(getItem(position) as PersonItem.Person)
+        }
     }
 
     companion object {

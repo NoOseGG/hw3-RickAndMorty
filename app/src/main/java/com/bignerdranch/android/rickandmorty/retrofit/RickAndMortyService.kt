@@ -7,7 +7,7 @@ import retrofit2.create
 
 object RickAndMortyService {
 
-    const val BASE_URL = "https://rickandmortyapi.com/api/"
+    private const val BASE_URL = "https://rickandmortyapi.com/api/"
     private var retrofit: RickAndMortyAPI? = null
 
     private fun provideRickAndMortyApi() : RickAndMortyAPI {

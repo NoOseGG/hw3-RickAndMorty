@@ -6,33 +6,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/background_space">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:title="Character"
-        app:titleTextColor="@color/white"
-        style="@style/MyDrawerArrowToggle"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/avatar"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:layout_width="@dimen/info_fragment_avatar_width"
+        android:layout_height="@dimen/info_fragment_avatar_height"
+        android:layout_marginTop="@dimen/info_fragment_margin_top_name_and_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/roundedImageView"
+        tools:ignore="ImageContrastCheck" />
 
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/info_fragment_margin_top_name_and_avatar"
         android:textColor="@color/white"
-        android:textSize="26sp"
+        android:textSize="@dimen/info_fragment_name_text_size"
         android:fontFamily="casual"
         app:layout_constraintTop_toBottomOf="@id/avatar"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,11 +34,11 @@
         android:id="@+id/status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/info_fragment_information_text_size"
         android:fontFamily="casual"
         android:textColor="@color/white"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginTop="@dimen/info_fragment_margin_top_status_textview"
+        android:layout_marginStart="@dimen/info_fragment_margin_start"
         app:layout_constraintTop_toBottomOf="@id/name"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Status: Alive"/>
@@ -56,10 +47,10 @@
         android:id="@+id/species"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/info_fragment_information_text_size"
         android:fontFamily="casual"
         android:textColor="@color/white"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/info_fragment_margin_start"
         app:layout_constraintTop_toBottomOf="@id/status"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Species: Alive"/>
@@ -68,10 +59,10 @@
         android:id="@+id/type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/info_fragment_information_text_size"
         android:fontFamily="casual"
         android:textColor="@color/white"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/info_fragment_margin_start"
         app:layout_constraintTop_toBottomOf="@id/species"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Type: Alive"/>
@@ -80,10 +71,10 @@
         android:id="@+id/gender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/info_fragment_information_text_size"
         android:fontFamily="casual"
         android:textColor="@color/white"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/info_fragment_margin_start"
         app:layout_constraintTop_toBottomOf="@id/type"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Gender: Alive"/>
@@ -92,10 +83,10 @@
         android:id="@+id/location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/info_fragment_information_text_size"
         android:fontFamily="casual"
         android:textColor="@color/white"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/info_fragment_margin_start"
         app:layout_constraintTop_toBottomOf="@id/gender"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Location: Earth"/>

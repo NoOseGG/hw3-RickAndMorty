@@ -1,7 +1,6 @@
 package com.bignerdranch.android.rickandmorty.navigation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,24 +9,24 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bignerdranch.android.rickandmorty.R
 import com.bignerdranch.android.rickandmorty.adapter.PersonAdapter
 import com.bignerdranch.android.rickandmorty.addPaginationScrollListener
+import com.bignerdranch.android.rickandmorty.addSpaceDecoration
 import com.bignerdranch.android.rickandmorty.databinding.FragmentListBinding
 import com.bignerdranch.android.rickandmorty.model.ListPerson
-import com.bignerdranch.android.rickandmorty.model.PersonInfo
 import com.bignerdranch.android.rickandmorty.model.PersonItem
 import com.bignerdranch.android.rickandmorty.retrofit.RickAndMortyService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.properties.Delegates
 
 class ListFragment : Fragment() {
 
     private var _binding: FragmentListBinding? = null
     private val binding get() = requireNotNull(_binding)
-    private var personInfo: PersonInfo? = null
+    private var pageCount by Delegates.notNull<Int>()
     private val adapter by lazy {
         PersonAdapter {
             findNavController().navigate(
@@ -56,36 +55,33 @@ class ListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val linearLayout = LinearLayoutManager(requireContext())
-        binding.recyclerView.layoutManager = linearLayout
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.addPaginationScrollListener(linearLayout, 10) {
-            if (!isLoading) {
-                isLoading = true
-
-                loadRickAndMortyCharacters(count)
-                count++
-                Log.d("MyTag", "$count")
-
-                isLoading = false
-            }
+        // Loading the first 20 items
+        if (count == 1) {
+            loadRickAndMortyCharacters(count)
+            count++
         }
 
+        val linearLayout = LinearLayoutManager(requireContext())
+
         with(binding) {
+            recyclerView.layoutManager = linearLayout
+            recyclerView.adapter = adapter
+            recyclerView.addSpaceDecoration(SPACE_DECORATION)
+            recyclerView.addPaginationScrollListener(linearLayout, ITEM_TO_LOAD_QUANTITY) {
+                if (!isLoading && count <= pageCount) {
+                    loadRickAndMortyCharacters(count)
+                }
+            }
+
             swipeRefresh.setOnRefreshListener {
                 count = 1
                 val listPersonEmpty = listOf<PersonItem.Person>()
                 adapter.submitList(listPersonEmpty)
                 loadRickAndMortyCharacters(count)
-                count ++
+                count++
                 showToast("Data updated")
                 swipeRefresh.isRefreshing = false
             }
-        }
-
-        if(count == 1) {
-            loadRickAndMortyCharacters(1)
-            count++
         }
     }
 
@@ -95,33 +91,51 @@ class ListFragment : Fragment() {
     }
 
     private fun loadRickAndMortyCharacters(page: Int) {
-        RickAndMortyService
-            .getInstance()
-            .getAllCharacters(page)
-            .enqueue(object : Callback<ListPerson> {
-                override fun onResponse(call: Call<ListPerson>, response: Response<ListPerson>) {
-                    if (response.isSuccessful) {
-                        val listPerson = response.body()
-                        val currentList = adapter.currentList.toList()
-                        val listResult =
-                            currentList.plus(listPerson?.results as List<PersonItem.Person>)
+        val load = RickAndMortyService.getInstance().getAllCharacters(page)
+        isLoading = true
+        load.enqueue(object : Callback<ListPerson> {
+            override fun onResponse(call: Call<ListPerson>, response: Response<ListPerson>) {
+                if (response.isSuccessful) {
+                    val listPerson = response.body()
 
+                    if (listPerson != null) {
+                        pageCount = listPerson.info.pages
+                    }
 
+                    val currentList = adapter.currentList.toList().dropLast(1)
+                    val listResult = currentList
+                        .plus(listPerson?.results as List<PersonItem.Person>)
+                        .plus(PersonItem.Loading)
+
+                    if (page != pageCount) {
                         adapter.submitList(listResult)
                     } else {
-                        showToast("Error during download")
+                        adapter.submitList(listResult.dropLast(1))
                     }
-                }
+                    count++
+                    println("$count")
 
-                override fun onFailure(call: Call<ListPerson>, t: Throwable) {
+                } else {
                     showToast("Error during download")
                 }
-            })
+                isLoading = false
+            }
+
+            override fun onFailure(call: Call<ListPerson>, t: Throwable) {
+                showToast("Error during download")
+            }
+        })
     }
 
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT)
             .show()
+        isLoading = false
+    }
+
+    companion object {
+        private const val SPACE_DECORATION = 20
+        private const val ITEM_TO_LOAD_QUANTITY = 20
     }
 
 }

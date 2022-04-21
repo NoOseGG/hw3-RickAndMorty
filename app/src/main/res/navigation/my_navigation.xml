@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/listFragment"
         android:name="com.bignerdranch.android.rickandmorty.navigation.ListFragment"
-        android:label="List Characters"
+        android:label="@string/title_actionbar_list_of_character"
         tools:layout="@layout/fragment_list">
         <action
             android:id="@+id/action_listFragment_to_infoFragment"

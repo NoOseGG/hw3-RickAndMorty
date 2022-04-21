@@ -22,10 +22,7 @@ fun RecyclerView.addPaginationScrollListener(
             }
         }
     })
-
-
 }
-
 
 fun RecyclerView.addSpaceDecoration(space: Int) {
     addItemDecoration(object : RecyclerView.ItemDecoration() {
